@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Database, Brain, Lock, Users, ChevronRight, CheckCircle, FileText, Globe, Sparkles, Zap, Award, TrendingUp, Eye, ArrowRight } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -55,10 +57,16 @@ const Index = () => {
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="px-6 py-2.5 border-2 border-blue-400 text-blue-300 rounded-lg hover:bg-blue-400 hover:text-white font-medium text-sm transition-all duration-300 transform hover:scale-105">
+              <button
+                onClick={() => navigate('/auth')}
+                className="px-6 py-2.5 border-2 border-blue-400 text-blue-300 rounded-lg hover:bg-blue-400 hover:text-white font-medium text-sm transition-all duration-300 transform hover:scale-105"
+              >
                 Citizen Login
               </button>
-              <button className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+              <button
+                onClick={() => navigate('/admin/login')}
+                className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
                 Admin Portal
               </button>
             </div>
