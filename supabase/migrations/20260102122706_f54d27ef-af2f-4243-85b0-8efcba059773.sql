@@ -1,0 +1,10 @@
+-- Fix function search path for generate_blockchain_hash
+CREATE OR REPLACE FUNCTION public.generate_blockchain_hash()
+RETURNS TEXT
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+BEGIN
+  RETURN '0x' || encode(gen_random_bytes(32), 'hex');
+END;
+$$;
