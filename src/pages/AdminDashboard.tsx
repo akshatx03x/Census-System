@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Users, MapPin, TrendingUp, Database, Download, Filter, BarChart3 } from "lucide-react";
+import { Users, MapPin, TrendingUp, Database, Download, Filter, BarChart3, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock data generator - replace with your Supabase data
 const generateMockData = () => {
@@ -26,6 +28,8 @@ const generateMockData = () => {
 };
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [casteData, setCasteData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [stateCasteData, setStateCasteData] = useState([]);
@@ -128,14 +132,19 @@ const AdminDashboard = () => {
 
   const getFilteredCasteData = () => {
     if (selectedState === "all") return casteData;
-    
+
     const stateEntry = stateCasteData.find(s => s.state === selectedState);
     if (!stateEntry) return [];
-    
+
     return Object.entries(stateEntry)
       .filter(([key]) => key !== 'state')
       .map(([caste, count]) => ({ caste, count }))
       .sort((a, b) => b.count - a.count);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/admin/login");
   };
 
   const statsCards = [
@@ -206,6 +215,10 @@ const AdminDashboard = () => {
               <Button onClick={exportData} className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 shadow-md">
                 <Download className="h-4 w-4" />
                 Export JSON
+              </Button>
+              <Button onClick={handleLogout} variant="outline" className="gap-2 shadow-sm text-red-600 border-red-200 hover:bg-red-50">
+                <LogOut className="h-4 w-4" />
+                Logout
               </Button>
             </div>
           </div>

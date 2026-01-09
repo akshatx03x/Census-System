@@ -1,336 +1,251 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Database, Brain, Lock, Users, ChevronRight, CheckCircle, FileText, Globe, Sparkles, Zap, Award, TrendingUp, Eye, ArrowRight } from "lucide-react";
+import { 
+  Shield, Database, Brain, Lock, Users, ChevronRight, 
+  Globe, Sparkles, Zap, Award, TrendingUp, BarChart3, 
+  Map, Fingerprint, Search, Menu, X 
+} from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [scrollY, setScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
-      {/* Animated Background */}
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(249,115,22,0.15),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(34,197,94,0.1),transparent_50%)]"></div>
+    <div className="min-h-screen bg-[#020617] text-slate-200 selection:bg-emerald-500/30">
+      {/* Subtle Ambient Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-emerald-500/5 rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[120px]" />
       </div>
 
-      {/* Top Bar */}
-      <div className="relative bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 text-white py-2 shadow-lg">
-        <div className="container mx-auto px-4 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-4 animate-fade-in">
-            <span className="hover:text-orange-100 cursor-pointer transition-colors">Screen Reader Access</span>
-            <span className="hover:text-orange-100 cursor-pointer transition-colors">Skip to Main Content</span>
+      {/* Official Top Bar */}
+      <div className="relative z-[60] bg-slate-950 border-b border-slate-800/50 py-1.5 px-4">
+        <div className="container mx-auto flex justify-between items-center text-[10px] uppercase tracking-widest font-semibold text-slate-400">
+          <div className="flex gap-6">
+            <span className="hover:text-emerald-400 cursor-pointer transition-colors">Ministry of Home Affairs</span>
+            <span className="hover:text-emerald-400 cursor-pointer transition-colors">Digital India</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="px-3 py-1 bg-white/20 rounded-full hover:bg-white/30 cursor-pointer transition-all">English</span>
-            <span className="px-3 py-1 hover:bg-white/20 rounded-full cursor-pointer transition-all">हिन्दी</span>
-            <span className="flex items-center gap-1 px-3 py-1 hover:bg-white/20 rounded-full cursor-pointer transition-all">
-              <Globe className="h-3 w-3" /> More
-            </span>
+          <div className="flex gap-4 items-center">
+            <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> Accessibility</span>
+            <div className="h-3 w-px bg-slate-800" />
+            <span className="text-emerald-500">English</span>
+            <span>हिन्दी</span>
           </div>
         </div>
       </div>
 
-      {/* Header Navigation */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-slate-950/95 backdrop-blur-xl shadow-2xl' : 'bg-transparent'}`}>
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <div className="relative w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-xl">
-                    <Shield className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-white tracking-tight">Census India</h1>
-                  <p className="text-xs text-blue-300">Government of India</p>
-                </div>
-              </div>
+      {/* Main Navigation */}
+      <header className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? 'py-3 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50' : 'py-6 bg-transparent'}`}>
+        <nav className="container mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <Shield className="text-slate-950 w-6 h-6" strokeWidth={2.5} />
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => navigate('/auth')}
-                className="px-6 py-2.5 border-2 border-blue-400 text-blue-300 rounded-lg hover:bg-blue-400 hover:text-white font-medium text-sm transition-all duration-300 transform hover:scale-105"
-              >
-                Citizen Login
-              </button>
-              <button
-                onClick={() => navigate('/admin/login')}
-                className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 font-medium text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                Admin Portal
-              </button>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight text-white leading-none">CENSUS INDIA</h1>
+              <p className="text-[10px] text-emerald-500 font-bold tracking-[0.2em] uppercase">National Portal</p>
             </div>
+          </div>
+
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+            {['Statistics', 'Methodology', 'Privacy', 'Resources'].map((item) => (
+              <a key={item} href="#" className="hover:text-white transition-colors relative group">
+                {item}
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-emerald-500 transition-all group-hover:w-full" />
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate('/auth')}
+              className="text-sm font-semibold text-slate-300 hover:text-white transition-colors"
+            >
+              Citizen Login
+            </button>
+            <button 
+              onClick={() => navigate('/admin/login')}
+              className="bg-white text-slate-950 px-5 py-2 rounded-full text-sm font-bold hover:bg-emerald-400 transition-all transform hover:scale-105 shadow-xl shadow-white/5"
+            >
+              Admin Login
+            </button>
           </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-transparent"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-orange-500/20 to-blue-500/20 backdrop-blur-xl border border-white/10 text-sm mb-8 shadow-xl animate-fade-in">
-              <Sparkles className="h-4 w-4 text-orange-400 animate-pulse" />
-              <span className="text-white font-medium">Secure & Transparent Census System</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight animate-fade-in">
-              <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400 bg-clip-text text-transparent">
-                Technology-Enabled
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 bg-clip-text text-transparent">
-                Secure Census
-              </span>
-              <br />
-              <span className="text-white">Management System</span>
-            </h1>
-            
-            <p className="text-xl text-blue-200 max-w-3xl mx-auto mb-12 leading-relaxed animate-fade-in" style={{animationDelay: '0.2s'}}>
-              Empowering inclusive governance through blockchain-verified data collection, 
-              AI-powered analytics, and privacy-first design for building a more equitable India.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{animationDelay: '0.4s'}}>
-              <button className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold text-base transition-all duration-300 shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 flex items-center justify-center gap-2">
-                Start Census Submission 
-                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button className="px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-xl border-2 border-white/20 hover:border-white/40 text-white rounded-xl font-bold text-base transition-all duration-300">
-                Learn About Privacy
-              </button>
-            </div>
-
-            {/* Floating Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 animate-fade-in" style={{animationDelay: '0.6s'}}>
-              {[
-                { value: "100%", label: "Secure", icon: Shield },
-                { value: "256-bit", label: "Encrypted", icon: Lock },
-                { value: "AI", label: "Powered", icon: Brain },
-                { value: "Blockchain", label: "Verified", icon: Database }
-              ].map((stat, i) => (
-                <div key={i} className="p-4 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group">
-                  <stat.icon className="h-8 w-8 mx-auto mb-2 text-orange-400 group-hover:scale-110 transition-transform" />
-                  <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                  <div className="text-xs text-blue-300 uppercase tracking-wider">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="relative py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-xl border border-white/10 text-sm mb-6">
-              <Zap className="h-4 w-4 text-yellow-400" />
-              <span className="text-white font-medium">Cutting-Edge Technology</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              How the System Works
-            </h2>
-            <p className="text-blue-200 max-w-2xl mx-auto text-lg">
-              Our system combines cutting-edge technology to ensure data security, transparency, and actionable insights.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                icon: Database,
-                title: "Blockchain Verification",
-                desc: "Every submission is cryptographically hashed and recorded on an immutable distributed ledger, ensuring tamper-proof data integrity.",
-                gradient: "from-blue-500 to-cyan-500",
-                bgGradient: "from-blue-500/10 to-cyan-500/10"
-              },
-              {
-                icon: Brain,
-                title: "AI-Powered Analytics",
-                desc: "Real-time machine learning algorithms help policymakers identify socio-economic trends and make data-driven decisions.",
-                gradient: "from-orange-500 to-red-500",
-                bgGradient: "from-orange-500/10 to-red-500/10"
-              },
-              {
-                icon: Lock,
-                title: "Privacy-First Design",
-                desc: "End-to-end AES-256 encryption and minimal data retention protocols ensure your personal information remains protected.",
-                gradient: "from-green-500 to-emerald-500",
-                bgGradient: "from-green-500/10 to-emerald-500/10"
-              }
-            ].map((feature, i) => (
-              <div 
-                key={i} 
-                className="group relative p-8 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-500 hover:transform hover:scale-105 animate-fade-in"
-                style={{animationDelay: `${i * 0.1}s`}}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                <div className="relative">
-                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:shadow-2xl transition-all duration-300 group-hover:scale-110`}>
-                    <feature.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">{feature.title}</h3>
-                  <p className="text-blue-200 leading-relaxed">{feature.desc}</p>
-                </div>
+      <main>
+        {/* Hero: Minimalist & Authoritative */}
+        <section className="pt-20 pb-32 px-6">
+          <div className="container mx-auto">
+            <div className="max-w-4xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold mb-8 tracking-wide">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                2026 CENSUS PHASE II NOW ACTIVE
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              
+              <h1 className="text-6xl md:text-8xl font-bold text-white mb-8 tracking-tight leading-[0.9]">
+                The Foundation of <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Governance.</span>
+              </h1>
+              
+              <p className="text-xl text-slate-400 max-w-2xl leading-relaxed mb-12">
+                A secure, cryptographic infrastructure for national data collection. 
+                Ensuring every citizen is counted, every voice is heard, and 
+                your privacy is mathematically guaranteed.
+              </p>
 
-      {/* Trust Section */}
-      <section className="relative py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
-            <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-2xl rounded-3xl p-12 border border-white/20 shadow-2xl">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 text-sm font-medium mb-6">
-                    <Award className="h-4 w-4 text-green-400" />
-                    <span className="text-green-300">Data Protection Certified</span>
-                  </div>
-                  <h2 className="text-4xl font-black text-white mb-6">Your Data, Your Rights</h2>
-                  <p className="text-blue-200 mb-8 leading-relaxed text-lg">
-                    We adhere to the highest international standards of data protection. Aadhaar and PAN are used solely 
-                    for verification purposes and are never stored in our systems.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { icon: Lock, text: "End-to-end Encryption", color: "blue" },
-                      { icon: Database, text: "Blockchain Verified", color: "purple" },
-                      { icon: Shield, text: "GDPR Compliant", color: "green" },
-                      { icon: Eye, text: "Full Transparency", color: "orange" }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 group">
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br from-${item.color}-500 to-${item.color}-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                          <item.icon className="h-5 w-5 text-white" />
-                        </div>
-                        <span className="text-sm font-medium text-white">{item.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/30 to-blue-500/30 rounded-2xl blur-2xl"></div>
-                  <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-12 text-center border border-white/20 shadow-xl">
-                    <TrendingUp className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-                    <div className="text-7xl font-black bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent mb-3">100%</div>
-                    <div className="text-lg font-bold text-white mb-2">Data Transparency</div>
-                    <div className="text-sm text-blue-300">Verified & Auditable</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="relative py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-blue-500/30 rounded-3xl blur-3xl"></div>
-              <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-2xl rounded-3xl p-12 border border-white/20">
-                <Sparkles className="h-12 w-12 text-orange-400 mx-auto mb-6 animate-pulse" />
-                <h2 className="text-4xl font-black text-white mb-6">Ready to Get Started?</h2>
-                <p className="text-blue-200 text-lg mb-8 max-w-2xl mx-auto">
-                  Join millions of citizens contributing to India's most secure and transparent census system.
-                </p>
-                <button className="group px-10 py-5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold text-lg transition-all duration-300 shadow-2xl hover:shadow-orange-500/50 transform hover:scale-105 inline-flex items-center gap-3">
-                  Submit Your Census Now
-                  <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform" />
+              <div className="flex flex-wrap gap-6">
+                <button onClick={()=> navigate('/auth')} className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-bold transition-all group">
+                  Begin Digital Submission
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button onClick={()=>navigate('/admin/login')} className="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 text-white px-8 py-4 rounded-xl font-bold transition-all">
+                  <BarChart3 className="w-5 h-5 text-emerald-500" />
+                  View Public Metrics
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Prototype Notice */}
-      <section className="relative py-6 border-t border-amber-500/30">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm text-amber-300">
-            <strong className="font-bold">Prototype Notice:</strong> This is a demonstration system. No real Aadhaar or PAN data is collected or stored.
-          </p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative bg-slate-950 border-t border-white/10 py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-white" />
+        {/* Bento Grid: Trust & Tech */}
+        <section className="py-24 bg-slate-950/50 relative">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
+              
+              {/* Feature 1: AI */}
+              <div className="md:col-span-8 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem] hover:border-emerald-500/30 transition-colors group">
+                <div className="flex justify-between items-start mb-12">
+                  <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20">
+                    <Brain className="text-emerald-500 w-8 h-8" />
+                  </div>
+                  <span className="text-[10px] font-black tracking-[0.2em] text-slate-500 group-hover:text-emerald-500 transition-colors">PRECISION ANALYTICS</span>
                 </div>
-                <span className="font-bold text-xl text-white">Census India</span>
+                <h3 className="text-3xl font-bold text-white mb-4">AI-Driven Insights</h3>
+                <p className="text-slate-400 text-lg max-w-xl">
+                  Leveraging advanced machine learning to predict demographic shifts and optimize resource distribution across 700+ districts.
+                </p>
               </div>
-              <p className="text-sm text-blue-300">Government of India Initiative</p>
+
+              {/* Feature 2: Security */}
+              <div className="md:col-span-4 bg-gradient-to-b from-emerald-600 to-teal-700 p-10 rounded-[2rem] text-white">
+                <Lock className="w-12 h-12 mb-8 opacity-50" />
+                <h3 className="text-3xl font-bold mb-4 leading-tight">Zero-Knowledge Architecture</h3>
+                <p className="text-emerald-100 opacity-90">
+                  Your identity is verified via encrypted hashes. We never store raw biometrics or sensitive documents.
+                </p>
+                <div className="mt-8 pt-8 border-t border-white/10 text-xs font-mono uppercase tracking-widest opacity-60">
+                  AES-256-GCM Protocol
+                </div>
+              </div>
+
+              {/* Feature 3: Real-time map placeholder */}
+              <div className="md:col-span-4 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem]">
+                <Map className="text-blue-400 w-10 h-10 mb-6" />
+                <h3 className="text-xl font-bold text-white mb-2">Geospatial Integrity</h3>
+                <p className="text-slate-400 text-sm">Automated GIS tagging ensures data accuracy across rural and urban landscapes.</p>
+              </div>
+
+              {/* Feature 4: Blockchain */}
+              <div className="md:col-span-8 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem] flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <Database className="text-amber-500 w-10 h-10 mb-6" />
+                  <h3 className="text-xl font-bold text-white mb-2">Immutable Ledger</h3>
+                  <p className="text-slate-400 text-sm">Publicly auditable hashing ensures that once your data is submitted, it cannot be tampered with by any authority.</p>
+                </div>
+                <div className="w-full md:w-48 h-32 bg-slate-800/50 rounded-xl border border-slate-700/50 flex flex-col items-center justify-center p-4">
+                  <div className="text-2xl font-mono font-bold text-emerald-500">99.9%</div>
+                  <div className="text-[10px] text-slate-500 uppercase tracking-tighter">Uptime Reliability</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* Data Protection Stat */}
+        <section className="py-24">
+          <div className="container mx-auto px-6 text-center">
+            <div className="max-w-3xl mx-auto">
+              <Fingerprint className="w-16 h-16 text-emerald-500 mx-auto mb-8 opacity-50" />
+              <h2 className="text-4xl font-bold text-white mb-6">Sovereignty Over Your Information</h2>
+              <p className="text-slate-400 text-lg mb-12">
+                We implement the strictest "Privacy by Design" principles. Every piece of data is tokenized, 
+                meaning individual records are decoupled from identity markers during processing.
+              </p>
+              <div className="flex justify-center gap-12">
+                <div>
+                  <div className="text-3xl font-bold text-white">ISO 27001</div>
+                  <div className="text-xs text-emerald-500 uppercase tracking-widest font-bold">Certified</div>
+                </div>
+                <div className="w-px h-12 bg-slate-800" />
+                <div>
+                  <div className="text-3xl font-bold text-white">GDPR-I</div>
+                  <div className="text-xs text-emerald-500 uppercase tracking-widest font-bold">Compliant</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer: Detailed & Institutional */}
+      <footer className="bg-slate-950 border-t border-slate-800 pt-20 pb-10">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
+            <div className="col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <Shield className="text-emerald-500 w-8 h-8" />
+                <span className="text-xl font-bold text-white tracking-tight">Census India 2026</span>
+              </div>
+              <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+                The Office of the Registrar General & Census Commissioner, India. 
+                Under the Ministry of Home Affairs, Government of India.
+              </p>
             </div>
             <div>
-              <h4 className="font-bold mb-4 text-white">Quick Links</h4>
-              <ul className="space-y-3 text-sm text-blue-300">
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Citizen Portal</li>
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Admin Login</li>
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Help & Support</li>
+              <h4 className="text-white font-bold mb-6 text-sm">Services</h4>
+              <ul className="text-slate-500 text-sm space-y-4">
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Citizen Login</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Admin Access</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Mobile Application</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4 text-white">Legal</h4>
-              <ul className="space-y-3 text-sm text-blue-300">
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Privacy Policy</li>
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Terms of Service</li>
-                <li className="hover:text-orange-400 cursor-pointer transition-colors">Data Protection</li>
+              <h4 className="text-white font-bold mb-6 text-sm">Legal</h4>
+              <ul className="text-slate-500 text-sm space-y-4">
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Privacy Policy</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Data Standards</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Cyber Security</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-4 text-white">Contact</h4>
-              <ul className="space-y-3 text-sm text-blue-300">
-                <li>Email: census@gov.in</li>
-                <li>Helpline: 1800-XXX-XXXX</li>
-                <li>Mon-Fri: 9 AM - 6 PM IST</li>
+              <h4 className="text-white font-bold mb-6 text-sm">Support</h4>
+              <ul className="text-slate-500 text-sm space-y-4">
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Help Desk</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">Nodal Officers</li>
+                <li className="hover:text-emerald-400 transition-colors cursor-pointer">FAQs</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-blue-300">
-            <p>© 2024 Census Management System. All rights reserved.</p>
-            <p className="flex items-center gap-2">
-              Powered by <span className="text-orange-400 font-semibold">Government of India</span>
-            </p>
+          
+          <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-slate-600 text-xs">
+              © 2026 Registrar General of India. All Rights Reserved.
+            </div>
+            <div className="flex gap-6 text-[10px] font-bold text-slate-500 tracking-widest uppercase">
+              <span>National Informatics Centre</span>
+              <span>Digital India Initiative</span>
+            </div>
           </div>
         </div>
       </footer>
-
-      <style>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 };
