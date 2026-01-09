@@ -1,12 +1,3 @@
--- Create enum for caste categories
-CREATE TYPE public.caste_category AS ENUM ('SC', 'ST', 'OBC', 'General', 'Other');
-
--- Create enum for user roles
-CREATE TYPE public.app_role AS ENUM ('admin', 'citizen');
-
--- Create enum for education levels
-CREATE TYPE public.education_level AS ENUM (
-  'No formal education',
   'Primary (1-5)',
   'Middle (6-8)',
   'Secondary (9-10)',
@@ -195,13 +186,16 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
+-- Enable pgcrypto extension for random bytes generation
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Create function to generate mock blockchain hash
 CREATE OR REPLACE FUNCTION public.generate_blockchain_hash()
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-  RETURN '0x' || encode(gen_random_bytes(32), 'hex');
+  RETURN '0x' || md5(random()::text || extract(epoch from now())::text);
 END;
 $$;
 

@@ -27,6 +27,11 @@ const Census = () => {
     name: "",
     age: "",
     gender: "",
+    aadharNumber: "",
+    address: "",
+    panNumber: "",
+    aadharImageUrl: "",
+    panImageUrl: "",
     state: "",
     district: "",
     casteCategory: "",
@@ -35,6 +40,9 @@ const Census = () => {
     incomeRange: "",
     educationLevel: "",
   });
+
+  const [aadharImageFile, setAadharImageFile] = useState<File | null>(null);
+  const [panImageFile, setPanImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -53,7 +61,7 @@ const Census = () => {
 
   const canProceed = () => {
     switch (currentStep) {
-      case 0: return formData.name && formData.age && formData.gender;
+      case 0: return formData.name && formData.age && formData.gender && formData.aadharNumber.length === 12 && formData.address && formData.panNumber.length === 10;
       case 1: return formData.state && formData.district;
       case 2: return formData.casteCategory;
       case 3: return formData.occupation && formData.incomeRange && formData.educationLevel;
@@ -63,17 +71,28 @@ const Census = () => {
   };
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user) {
+      toast({ title: "Authentication Error", description: "You must be logged in to submit.", variant: "destructive" });
+      return;
+    }
     setIsSubmitting(true);
+
+    console.log("User ID:", user.id);
+    console.log("User authenticated:", !!user);
 
     const selectedState = indianStates.find(s => s.code === formData.state);
     const selectedDistrict = districts.find(d => d.code === formData.district);
 
-    const { error } = await supabase.from("census_submissions").insert({
+    const submissionData = {
       user_id: user.id,
       name: formData.name,
       age: parseInt(formData.age),
       gender: formData.gender,
+      aadhar_number: formData.aadharNumber,
+      address: formData.address,
+      pan_number: formData.panNumber,
+      aadhar_image_url: formData.aadharImageUrl,
+      pan_image_url: formData.panImageUrl,
       state: selectedState?.name || formData.state,
       district: selectedDistrict?.name || formData.district,
       caste_category: formData.casteCategory as any,
@@ -81,11 +100,18 @@ const Census = () => {
       occupation: formData.occupation,
       income_range: formData.incomeRange as any,
       education_level: formData.educationLevel as any,
-    });
+    };
+
+    console.log("Submission data:", submissionData);
+
+    const { data, error } = await supabase.from("census_submissions").insert(submissionData);
+
+    console.log("Supabase response:", { data, error });
 
     setIsSubmitting(false);
 
     if (error) {
+      console.error("Submission error:", error);
       toast({ title: "Submission Failed", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Census Submitted!", description: "Your data has been recorded on the blockchain." });
@@ -155,6 +181,98 @@ const Census = () => {
                         <SelectItem value="Other">Other</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Aadhar Card Number (12 digits)</Label>
+                  <Input
+                    type="text"
+                    placeholder="Enter 12-digit Aadhar number"
+                    value={formData.aadharNumber}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 12);
+                      updateField("aadharNumber", value);
+                    }}
+                    maxLength={12}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Address</Label>
+                  <Input placeholder="Enter your full address" value={formData.address} onChange={(e) => updateField("address", e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>PAN Card Number (10 characters)</Label>
+                  <Input
+                    type="text"
+                    placeholder="Enter 10-character PAN number"
+                    value={formData.panNumber}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+                      updateField("panNumber", value);
+                    }}
+                    maxLength={10}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Aadhar Card Image</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setAadharImageFile(file);
+                          // Upload to Supabase storage
+                          const uploadFile = async () => {
+                            const fileExt = file.name.split('.').pop();
+                            const fileName = `${user?.id}_aadhar.${fileExt}`;
+                            const { data, error } = await supabase.storage
+                              .from('documents')
+                              .upload(fileName, file);
+                            if (error) {
+                              toast({ title: "Upload Failed", description: error.message, variant: "destructive" });
+                            } else {
+                              const { data: { publicUrl } } = supabase.storage
+                                .from('documents')
+                                .getPublicUrl(fileName);
+                              updateField("aadharImageUrl", publicUrl);
+                            }
+                          };
+                          uploadFile();
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>PAN Card Image</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setPanImageFile(file);
+                          // Upload to Supabase storage
+                          const uploadFile = async () => {
+                            const fileExt = file.name.split('.').pop();
+                            const fileName = `${user?.id}_pan.${fileExt}`;
+                            const { data, error } = await supabase.storage
+                              .from('documents')
+                              .upload(fileName, file);
+                            if (error) {
+                              toast({ title: "Upload Failed", description: error.message, variant: "destructive" });
+                            } else {
+                              const { data: { publicUrl } } = supabase.storage
+                                .from('documents')
+                                .getPublicUrl(fileName);
+                              updateField("panImageUrl", publicUrl);
+                            }
+                          };
+                          uploadFile();
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               </>
@@ -254,6 +372,9 @@ const Census = () => {
                   <div className="flex justify-between"><span className="text-muted-foreground">Name:</span><span className="font-medium">{formData.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Age:</span><span>{formData.age}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Gender:</span><span>{formData.gender}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Aadhar Number:</span><span>{formData.aadharNumber}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Address:</span><span>{formData.address}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">PAN Number:</span><span>{formData.panNumber}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">State:</span><span>{indianStates.find(s => s.code === formData.state)?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">District:</span><span>{districts.find(d => d.code === formData.district)?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Caste Category:</span><span>{formData.casteCategory}</span></div>

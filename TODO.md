@@ -1,3 +1,0 @@
-- [x] Create AdminDashboard.tsx with caste-wise submission graph
-- [x] Add /admin/dashboard route to App.tsx
-- [x] Test admin login and dashboard access
