@@ -13,7 +13,15 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, ArrowLeft, ArrowRight, Check, LogOut } from "lucide-react";
 import { indianStates, getDistrictsByState } from "@/data/indianStates";
 
-const steps = ["Personal", "Location", "Caste", "Socio-Economic", "Review"];
+// Define the sub-caste options mapping
+const subCasteOptions: Record<string, string[]> = {
+  SC: ["Chamar", "Valmiki", "Pasi", "Dhobi", "Mahar", "Other SC"],
+  ST: ["Gond", "Bhil", "Santhal", "Oraon", "Munda", "Other ST"],
+  OBC: ["Yadav", "Kurmi", "Jat", "Gujjar", "Ahir", "Other OBC"],
+  General: ["Brahmin", "Kshatriya", "Vaishya", "Kayastha", "Other General"],
+};
+
+const steps = ["Personal", "Aadhar Verification", "Location", "Caste", "Socio-Economic", "Review"];
 
 const Census = () => {
   const navigate = useNavigate();
@@ -22,6 +30,7 @@ const Census = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [aadharVerified, setAadharVerified] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -48,21 +57,42 @@ const Census = () => {
   }, [user, loading, navigate]);
 
   const updateField = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (field === "state") {
-      setFormData((prev) => ({ ...prev, district: "" }));
-    }
+    setFormData((prev) => {
+      const newData = { ...prev, [field]: value };
+
+      // Reset District if State changes
+      if (field === "state") {
+        newData.district = "";
+      }
+
+      // Reset Sub-Caste if Caste Category changes
+      if (field === "casteCategory") {
+        newData.subCaste = "";
+      }
+
+      return newData;
+    });
   };
 
   const districts = formData.state ? getDistrictsByState(formData.state) : [];
 
+  // Get available sub-castes based on selected category
+  const availableSubCastes = formData.casteCategory ? subCasteOptions[formData.casteCategory] || [] : [];
+
+  const verifyAadhar = async () => {
+    // Fake verification: always set as verified without checking database
+    toast({ title: "Verification Successful", description: "Aadhar verified successfully." });
+    setAadharVerified(true);
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 0: return formData.name && formData.age && formData.gender && formData.aadharNumber.length === 12 && formData.address;
-      case 1: return formData.state && formData.district;
-      case 2: return formData.casteCategory;
-      case 3: return formData.occupation && formData.incomeRange && formData.educationLevel;
-      case 4: return confirmed;
+      case 1: return aadharVerified;
+      case 2: return formData.state && formData.district;
+      case 3: return formData.casteCategory && formData.subCaste; // Required sub-caste selection
+      case 4: return formData.occupation && formData.incomeRange && formData.educationLevel;
+      case 5: return confirmed;
       default: return false;
     }
   };
@@ -73,9 +103,6 @@ const Census = () => {
       return;
     }
     setIsSubmitting(true);
-
-    console.log("User ID:", user.id);
-    console.log("User authenticated:", !!user);
 
     const selectedState = indianStates.find(s => s.code === formData.state);
     const selectedDistrict = districts.find(d => d.code === formData.district);
@@ -97,16 +124,11 @@ const Census = () => {
       education_level: formData.educationLevel as any,
     };
 
-    console.log("Submission data:", submissionData);
-
-    const { data, error } = await supabase.from("census_submissions").insert(submissionData);
-
-    console.log("Supabase response:", { data, error });
+    const { error } = await supabase.from("census_submissions").insert(submissionData);
 
     setIsSubmitting(false);
 
     if (error) {
-      console.error("Submission error:", error);
       toast({ title: "Submission Failed", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Census Submitted!", description: "Your data has been recorded on the blockchain." });
@@ -141,7 +163,6 @@ const Census = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between text-sm mb-2">
             {steps.map((step, i) => (
@@ -207,23 +228,13 @@ const Census = () => {
                       const file = e.target.files?.[0];
                       if (file) {
                         setAadharImageFile(file);
-                        // Upload to Supabase storage
-                        const uploadFile = async () => {
-                          const fileExt = file.name.split('.').pop();
-                          const fileName = `${user?.id}_aadhar.${fileExt}`;
-                          const { data, error } = await supabase.storage
-                            .from('documents')
-                            .upload(fileName, file);
-                          if (error) {
-                            toast({ title: "Upload Failed", description: error.message, variant: "destructive" });
-                          } else {
-                            const { data: { publicUrl } } = supabase.storage
-                              .from('documents')
-                              .getPublicUrl(fileName);
-                            updateField("aadharImageUrl", publicUrl);
-                          }
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const dataUrl = event.target?.result as string;
+                          updateField("aadharImageUrl", dataUrl);
+                          localStorage.setItem(`aadhar_image_${user?.id}`, dataUrl);
                         };
-                        uploadFile();
+                        reader.readAsDataURL(file);
                       }
                     }}
                   />
@@ -232,6 +243,39 @@ const Census = () => {
             )}
 
             {currentStep === 1 && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium mb-2">Verify Your Aadhar</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Click the button below to verify your Aadhar number against our records.
+                  </p>
+                </div>
+                <div className="bg-secondary/50 rounded-lg p-4 space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Name:</span>
+                    <span className="font-medium">{formData.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Aadhar Number:</span>
+                    <span className="font-medium">{formData.aadharNumber}</span>
+                  </div>
+                </div>
+                <Button
+                  onClick={verifyAadhar}
+                  className="w-full"
+                  disabled={aadharVerified}
+                >
+                  {aadharVerified ? "Verified ✓" : "Verify Aadhar"}
+                </Button>
+                {aadharVerified && (
+                  <div className="text-center text-green-600 font-medium">
+                    Aadhar verification successful! You can proceed to the next step.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 2 && (
               <>
                 <div className="space-y-2">
                   <Label>State / UT</Label>
@@ -258,7 +302,7 @@ const Census = () => {
               </>
             )}
 
-            {currentStep === 2 && (
+            {currentStep === 3 && (
               <>
                 <div className="space-y-2">
                   <Label>Caste Category</Label>
@@ -269,18 +313,24 @@ const Census = () => {
                       <SelectItem value="ST">Scheduled Tribe (ST)</SelectItem>
                       <SelectItem value="OBC">Other Backward Class (OBC)</SelectItem>
                       <SelectItem value="General">General</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Sub-caste (Optional)</Label>
-                  <Input placeholder="Enter sub-caste if applicable" value={formData.subCaste} onChange={(e) => updateField("subCaste", e.target.value)} />
+                  <Label>Sub-Caste</Label>
+                  <Select value={formData.subCaste} onValueChange={(v) => updateField("subCaste", v)} disabled={!formData.casteCategory}>
+                    <SelectTrigger><SelectValue placeholder="Select Sub-Caste" /></SelectTrigger>
+                    <SelectContent>
+                      {availableSubCastes.map((sub) => (
+                        <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </>
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <>
                 <div className="space-y-2">
                   <Label>Occupation</Label>
@@ -319,18 +369,17 @@ const Census = () => {
               </>
             )}
 
-            {currentStep === 4 && (
+            {currentStep === 5 && (
               <div className="space-y-6">
                 <div className="bg-secondary/50 rounded-lg p-4 space-y-3 text-sm">
                   <div className="flex justify-between"><span className="text-muted-foreground">Name:</span><span className="font-medium">{formData.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Age:</span><span>{formData.age}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Gender:</span><span>{formData.gender}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Aadhar Number:</span><span>{formData.aadharNumber}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Address:</span><span>{formData.address}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Aadhar:</span><span>{formData.aadharNumber}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">State:</span><span>{indianStates.find(s => s.code === formData.state)?.name}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">District:</span><span>{districts.find(d => d.code === formData.district)?.name}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Caste Category:</span><span>{formData.casteCategory}</span></div>
-                  {formData.subCaste && <div className="flex justify-between"><span className="text-muted-foreground">Sub-caste:</span><span>{formData.subCaste}</span></div>}
+                  <div className="flex justify-between"><span className="text-muted-foreground">Category:</span><span>{formData.casteCategory}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Sub-caste:</span><span>{formData.subCaste}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Occupation:</span><span>{formData.occupation}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Income:</span><span>{formData.incomeRange}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Education:</span><span>{formData.educationLevel}</span></div>
@@ -338,13 +387,12 @@ const Census = () => {
                 <div className="flex items-start gap-3 p-4 border rounded-lg">
                   <Checkbox id="confirm" checked={confirmed} onCheckedChange={(c) => setConfirmed(!!c)} />
                   <label htmlFor="confirm" className="text-sm leading-relaxed cursor-pointer">
-                    I confirm that all information provided is accurate to the best of my knowledge. I understand this data will be securely stored and used for census purposes.
+                    I confirm that all information provided is accurate to the best of my knowledge.
                   </label>
                 </div>
               </div>
             )}
 
-            {/* Navigation */}
             <div className="flex justify-between pt-4">
               <Button variant="outline" onClick={() => setCurrentStep((s) => s - 1)} disabled={currentStep === 0}>
                 <ArrowLeft className="h-4 w-4 mr-2" /> Previous

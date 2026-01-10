@@ -9,12 +9,13 @@ import { Users, MapPin, TrendingUp, Database, Download, Filter, BarChart3, LogOu
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getStateByCode } from "@/data/indianStates";
 
 // Fetch data from Supabase
 const fetchFromSupabase = async () => {
   const { data, error } = await supabase
     .from('census_submissions')
-    .select('caste_category, state');
+    .select('caste_category, state, sub_caste');
 
   if (error) {
     throw error;
@@ -30,7 +31,10 @@ const AdminDashboard = () => {
   const [casteData, setCasteData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [stateCasteData, setStateCasteData] = useState([]);
+  const [subcasteData, setSubcasteData] = useState([]);
+  const [stateSubcasteData, setStateSubcasteData] = useState([]);
   const [selectedState, setSelectedState] = useState("all");
+  const [selectedStateForSubcaste, setSelectedStateForSubcaste] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [totalSubmissions, setTotalSubmissions] = useState(0);
   const [uniqueStates, setUniqueStates] = useState(0);
@@ -74,8 +78,9 @@ const AdminDashboard = () => {
 
     const stateCounts = {};
     submissions.forEach((sub) => {
-      const state = sub.state || "Unspecified";
-      stateCounts[state] = (stateCounts[state] || 0) + 1;
+      const stateCode = sub.state || "Unspecified";
+      const stateName = getStateByCode(stateCode)?.name || stateCode;
+      stateCounts[stateName] = (stateCounts[stateName] || 0) + 1;
     });
 
     const stateChartData = Object.entries(stateCounts)
@@ -87,14 +92,15 @@ const AdminDashboard = () => {
 
     const stateCasteBreakdown = {};
     submissions.forEach((sub) => {
-      const state = sub.state || "Unspecified";
+      const stateCode = sub.state || "Unspecified";
+      const stateName = getStateByCode(stateCode)?.name || stateCode;
       const caste = sub.caste_category || "Unspecified";
-      
-      if (!stateCasteBreakdown[state]) {
-        stateCasteBreakdown[state] = {};
+
+      if (!stateCasteBreakdown[stateName]) {
+        stateCasteBreakdown[stateName] = {};
       }
-      
-      stateCasteBreakdown[state][caste] = (stateCasteBreakdown[state][caste] || 0) + 1;
+
+      stateCasteBreakdown[stateName][caste] = (stateCasteBreakdown[stateName][caste] || 0) + 1;
     });
 
     const stateCasteChartData = Object.entries(stateCasteBreakdown).map(([state, castes]) => ({
@@ -103,6 +109,37 @@ const AdminDashboard = () => {
     }));
 
     setStateCasteData(stateCasteChartData);
+
+    const subcasteCounts = {};
+    submissions.forEach((sub) => {
+      const subcaste = sub.sub_caste || "Unspecified";
+      subcasteCounts[subcaste] = (subcasteCounts[subcaste] || 0) + 1;
+    });
+
+    const subcasteChartData = Object.entries(subcasteCounts)
+      .map(([subcaste, count]) => ({ subcaste, count }))
+      .sort((a, b) => b.count - a.count);
+    setSubcasteData(subcasteChartData);
+
+    const stateSubcasteBreakdown = {};
+    submissions.forEach((sub) => {
+      const stateCode = sub.state || "Unspecified";
+      const stateName = getStateByCode(stateCode)?.name || stateCode;
+      const subcaste = sub.sub_caste || "Unspecified";
+
+      if (!stateSubcasteBreakdown[stateName]) {
+        stateSubcasteBreakdown[stateName] = {};
+      }
+
+      stateSubcasteBreakdown[stateName][subcaste] = (stateSubcasteBreakdown[stateName][subcaste] || 0) + 1;
+    });
+
+    const stateSubcasteChartData = Object.entries(stateSubcasteBreakdown).map(([state, subcastes]) => ({
+      state,
+      ...subcastes,
+    }));
+
+    setStateSubcasteData(stateSubcasteChartData);
   };
 
   const exportData = () => {
@@ -145,6 +182,18 @@ const AdminDashboard = () => {
     return Object.entries(stateEntry)
       .filter(([key]) => key !== 'state')
       .map(([caste, count]) => ({ caste, count }))
+      .sort((a, b) => b.count - a.count);
+  };
+
+  const getFilteredSubcasteData = () => {
+    if (selectedStateForSubcaste === "all") return subcasteData;
+
+    const stateEntry = stateSubcasteData.find(s => s.state === selectedStateForSubcaste);
+    if (!stateEntry) return [];
+
+    return Object.entries(stateEntry)
+      .filter(([key]) => key !== 'state')
+      .map(([subcaste, count]) => ({ subcaste, count }))
       .sort((a, b) => b.count - a.count);
   };
 
@@ -359,7 +408,7 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="states">
+          <TabsContent value="states" className="space-y-6">
             <Card className="shadow-lg border-slate-200">
               <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-t-xl">
                 <CardTitle>State-wise Census Data</CardTitle>
@@ -367,26 +416,68 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent className="pt-6">
                 <ResponsiveContainer width="100%" height={600}>
-                  <BarChart data={stateData} layout="horizontal">
+                  <BarChart data={stateData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis type="number" fontSize={12} />
-                    <YAxis 
-                      dataKey="state" 
-                      type="category" 
-                      width={130}
+                    <XAxis
+                      dataKey="state"
+                      angle={-45}
+                      textAnchor="end"
+                      height={100}
                       fontSize={11}
                     />
-                    <RechartsTooltip 
+                    <YAxis fontSize={12} />
+                    <RechartsTooltip
                       contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px' }}
                     />
-                    <Bar dataKey="count" fill="#10b981" radius={[0, 8, 8, 0]} />
+                    <Bar dataKey="count" fill="#10b981" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+
+            <Card className="shadow-lg border-slate-200">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-teal-50 rounded-t-xl">
+                <CardTitle>State-Subcaste Matrix</CardTitle>
+                <CardDescription>Breakdown of top 10 subcastes across states</CardDescription>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="overflow-x-auto rounded-lg border border-slate-200">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b bg-gradient-to-r from-slate-100 to-slate-50">
+                        <th className="text-left p-3 font-semibold text-slate-700 sticky left-0 bg-slate-100">State</th>
+                        {subcasteData.slice(0, 10).map(s => (
+                          <th key={s.subcaste} className="text-right p-3 font-semibold text-slate-700">{s.subcaste}</th>
+                        ))}
+                        <th className="text-right p-3 font-semibold text-slate-700 bg-green-50">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stateSubcasteData.map((stateRow, idx) => {
+                        const total = Object.entries(stateRow)
+                          .filter(([key]) => key !== 'state')
+                          .reduce((sum, [, val]) => sum + (val as number), 0);
+
+                        return (
+                          <tr key={idx} className={`border-b hover:bg-green-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}>
+                            <td className="p-3 font-medium text-slate-800 sticky left-0 bg-inherit">{stateRow.state}</td>
+                            {subcasteData.slice(0, 10).map(s => (
+                              <td key={s.subcaste} className="text-right p-3 text-slate-600">
+                                {(stateRow[s.subcaste] || 0).toLocaleString()}
+                              </td>
+                            ))}
+                            <td className="text-right p-3 font-semibold text-green-700 bg-green-50">{total.toLocaleString()}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="castes">
+          <TabsContent value="castes" className="space-y-6">
             <Card className="shadow-lg border-slate-200">
               <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -414,10 +505,46 @@ const AdminDashboard = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis dataKey="caste" fontSize={12} />
                     <YAxis fontSize={12} />
-                    <RechartsTooltip 
+                    <RechartsTooltip
                       contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px' }}
                     />
                     <Bar dataKey="count" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-lg border-slate-200">
+              <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-t-xl">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                  <div>
+                    <CardTitle>Subcaste-wise Submissions</CardTitle>
+                    <CardDescription>Filter by state to see subcaste distribution</CardDescription>
+                  </div>
+                  <Select value={selectedStateForSubcaste} onValueChange={setSelectedStateForSubcaste}>
+                    <SelectTrigger className="w-full md:w-[250px] shadow-sm">
+                      <Filter className="h-4 w-4 mr-2" />
+                      <SelectValue placeholder="Select state" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All States Combined</SelectItem>
+                      {stateData.map(s => (
+                        <SelectItem key={s.state} value={s.state}>{s.state}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={getFilteredSubcasteData()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="subcaste" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <RechartsTooltip
+                      contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px' }}
+                    />
+                    <Bar dataKey="count" fill="#ec4899" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -446,7 +573,7 @@ const AdminDashboard = () => {
                       {stateCasteData.map((stateRow, idx) => {
                         const total = Object.entries(stateRow)
                           .filter(([key]) => key !== 'state')
-                          .reduce((sum, [, val]) => sum + val, 0);
+                          .reduce((sum, [, val]) => sum + (val as number), 0);
                         
                         return (
                           <tr key={idx} className={`border-b hover:bg-blue-50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}`}>
