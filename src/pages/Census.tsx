@@ -342,18 +342,10 @@ const Census = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Age</Label>
-                    <Input
-                      type="number"
-                      min="1"
-                      max="120"
-                      placeholder="Age"
-                      value={formData.age}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '').slice(0, 3);
-                        updateField("age", value);
-                      }}
-                      maxLength={3}
-                    />
+                    <Input type="text" placeholder="Age" value={formData.age} onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 3);
+                      updateField("age", value);
+                    }} />
                   </div>
                   <div className="space-y-2">
                     <Label>Gender</Label>
