@@ -7,29 +7,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Users, MapPin, TrendingUp, Database, Download, Filter, BarChart3, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data generator - replace with your Supabase data
-const generateMockData = () => {
-  const states = ["Maharashtra", "Uttar Pradesh", "Bihar", "West Bengal", "Madhya Pradesh", 
-                  "Tamil Nadu", "Rajasthan", "Karnataka", "Gujarat", "Andhra Pradesh",
-                  "Odisha", "Kerala", "Jharkhand", "Assam", "Punjab", "Chhattisgarh",
-                  "Haryana", "Delhi", "Jammu and Kashmir", "Uttarakhand"];
-  
-  const castes = ["General", "OBC", "SC", "ST", "EWS"];
-  
-  const submissions = [];
-  for (let i = 0; i < 5000; i++) {
-    submissions.push({
-      caste_category: castes[Math.floor(Math.random() * castes.length)],
-      state: states[Math.floor(Math.random() * states.length)]
-    });
+// Fetch data from Supabase
+const fetchFromSupabase = async () => {
+  const { data, error } = await supabase
+    .from('census_submissions')
+    .select('caste_category, state');
+
+  if (error) {
+    throw error;
   }
-  return submissions;
+
+  return data || [];
 };
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { toast } = useToast();
   const [casteData, setCasteData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [stateCasteData, setStateCasteData] = useState([]);
@@ -43,14 +40,23 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const submissions = generateMockData();
-      processData(submissions);
-      setIsLoading(false);
+      try {
+        const submissions = await fetchFromSupabase();
+        processData(submissions);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast({
+          title: "Error Loading Data",
+          description: "Failed to load census data. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [toast]);
 
   const processData = (submissions) => {
     setTotalSubmissions(submissions.length);

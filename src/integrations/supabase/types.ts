@@ -157,6 +157,24 @@ export type Database = {
         }
         Relationships: []
       }
+      aadhar_records: {
+        Row: {
+          id: number
+          name: string
+          aadhar_number: string
+        }
+        Insert: {
+          id?: number
+          name: string
+          aadhar_number: string
+        }
+        Update: {
+          id?: number
+          name?: string
+          aadhar_number?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
