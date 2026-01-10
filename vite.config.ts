@@ -7,13 +7,21 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
+    port: 5173,  // Frontend on 5173
     historyApiFallback: true,
+    proxy: {
+      // ML API calls are automatically forwarded to port 5000
+      "/extract": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
 }));
