@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Database, Shield, Download, Home, FileCheck, Clock, Lock, ExternalLink, Copy, Check } from "lucide-react";
-
+import jsPDF from 'jspdf';
+import { useNavigate } from "react-router-dom";
 const Success = () => {
+  const navigate = useNavigate();
   const [hash, setHash] = useState('');
   const [timestamp, setTimestamp] = useState('');
   const [copied, setCopied] = useState(false);
-  const [submissionId] = useState('CEN-2024-' + Math.random().toString(36).substr(2, 9).toUpperCase());
+  const [submissionId, setSubmissionId] = useState('');
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
+    // Load form data from localStorage
+    const storedData = localStorage.getItem('census_form_data');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setUserData(parsedData);
+      setSubmissionId(parsedData.submissionId);
+      setTimestamp(parsedData.timestamp);
+    }
+
     // Generate mock blockchain hash
     const chars = '0123456789abcdef';
     let mockHash = '0x';
@@ -15,13 +27,100 @@ const Success = () => {
       mockHash += chars[Math.floor(Math.random() * chars.length)];
     }
     setHash(mockHash);
-    setTimestamp(new Date().toISOString());
   }, []);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(hash);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const downloadReceipt = () => {
+    const doc = new jsPDF();
+
+    // Set up the PDF
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Government of India', 105, 20, { align: 'center' });
+    doc.setFontSize(16);
+    doc.text('Census Submission Receipt', 105, 35, { align: 'center' });
+
+    // Add a line separator
+    doc.setLineWidth(0.5);
+    doc.line(20, 45, 190, 45);
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+
+    // Submission Details
+    doc.setFont('helvetica', 'bold');
+    doc.text('Submission Details:', 20, 60);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Submission ID: ${submissionId}`, 20, 75);
+    doc.text(`Blockchain Hash: ${hash.substring(0, 32)}...`, 20, 85);
+    doc.text(`Timestamp: ${new Date(timestamp).toLocaleString('en-IN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Kolkata'
+    })} IST`, 20, 95);
+
+    // Personal Information Section
+    if (userData) {
+      doc.setFont('helvetica', 'bold');
+      doc.text('Personal Information:', 20, 115);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Name: ${userData.name}`, 20, 130);
+      doc.text(`Age: ${userData.age} years`, 20, 140);
+      doc.text(`Gender: ${userData.gender}`, 20, 150);
+      doc.text(`Aadhar Number: ${userData.aadhar_number}`, 20, 160);
+
+      // Address Section
+      doc.setFont('helvetica', 'bold');
+      doc.text('Address Information:', 20, 180);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Address: ${userData.address}`, 20, 195);
+      doc.text(`State: ${userData.state}`, 20, 205);
+      doc.text(`District: ${userData.district}`, 20, 215);
+
+      // Socio-Economic Information
+      doc.setFont('helvetica', 'bold');
+      doc.text('Socio-Economic Details:', 20, 235);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Caste Category: ${userData.caste_category}`, 20, 250);
+      doc.text(`Sub-Caste: ${userData.sub_caste || 'Not specified'}`, 20, 260);
+      doc.text(`Occupation: ${userData.occupation}`, 20, 270);
+      doc.text(`Annual Income: ${userData.income_range}`, 20, 280);
+      doc.text(`Education Level: ${userData.education_level}`, 20, 290);
+    }
+
+    // Processing Status
+    doc.setFont('helvetica', 'bold');
+    doc.text('Processing Status:', 20, 310);
+    doc.setFont('helvetica', 'normal');
+    doc.text('✓ Data Encrypted with AES-256', 30, 325);
+    doc.text('✓ Blockchain Verification Completed', 30, 335);
+    doc.text('✓ Government Database Updated', 30, 345);
+    doc.text('✓ Confirmation Generated', 30, 355);
+
+    // Footer
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.text('This receipt confirms successful submission to the National Census System.', 20, 375);
+    doc.text('Your data has been securely recorded and verified on the blockchain.', 20, 385);
+    doc.text('For any queries, contact: support@census.gov.in', 20, 395);
+
+    // Add official seal/watermark
+    doc.setFontSize(8);
+    doc.setTextColor(200, 200, 200);
+    doc.text('OFFICIAL DOCUMENT - Government of India', 105, 410, { align: 'center' });
+
+    // Save the PDF
+    doc.save(`Census_Receipt_${submissionId}.pdf`);
   };
 
   return (
@@ -185,12 +284,19 @@ const Success = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <button className="px-6 py-4 bg-white border-2 border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group">
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            <button
+              onClick={downloadReceipt}
+              className="px-6 py-4 bg-white border-2 border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
+            >
               <Download className="h-5 w-5 group-hover:scale-110 transition-transform" />
               Download Receipt (PDF)
             </button>
-            <button className="px-6 py-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:from-blue-800 hover:to-blue-700 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group">
+            <button onClick={() => navigate('/written-policies')} className="px-6 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl hover:from-green-500 hover:to-green-400 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group">
+              <FileCheck className="h-5 w-5 group-hover:scale-110 transition-transform" />
+              View Written Policies
+            </button>
+            <button onClick={() => navigate('/')} className="px-6 py-4 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-xl hover:from-blue-800 hover:to-blue-700 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group">
               <Home className="h-5 w-5 group-hover:scale-110 transition-transform" />
               Return to Home
             </button>

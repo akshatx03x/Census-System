@@ -11,6 +11,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Privacy from "./pages/Privacy";
+import WrittenPolicies from "./pages/WrittenPolicies";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/written-policies" element={<WrittenPolicies />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

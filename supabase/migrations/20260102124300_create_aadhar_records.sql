@@ -8,6 +8,6 @@ CREATE TABLE public.aadhar_records (
 -- Insert sample data
 INSERT INTO public.aadhar_records (name, aadhar_number) VALUES
 ('Dayanand Ningayya Mayur', '4828 8429 4931'),
-('John Smith', '123456789012'),
-('SAMARTH SHARMA', '123456789012'),
+('Akshat Gupta', '123456789012'),
+('SAMARTH SHARMA', '123456789013'),
 ('SID MALHORTA', '342506531151');
