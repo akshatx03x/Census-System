@@ -90,8 +90,8 @@ const Census = () => {
   const availableSubCastes = formData.casteCategory ? subCasteOptions[formData.casteCategory] || [] : [];
 
   // ML API URL - Use environment variable for production deployment
-  // For local development: "http://localhost:8080/extract"
-  // For production: Set VITE_ML_API_URL in .env file
+  // For local development: "http://localhost:7860/extract" (via proxy)
+  // For production: Set VITE_ML_API_URL in .env file (e.g., https://your-hf-space.hf.space/extract)
   const ML_API_URL = import.meta.env.VITE_ML_API_URL || "/extract";
 
   const verifyAadharWithML = async () => {

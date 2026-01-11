@@ -1,4 +1,4 @@
--- Fix function search path for generate_blockchain_hash
+
 CREATE OR REPLACE FUNCTION public.generate_blockchain_hash()
 RETURNS TEXT
 LANGUAGE plpgsql
