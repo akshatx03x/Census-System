@@ -1,78 +1,25 @@
+# Deployment Tasks for Census System
 
+## Status: ML Backend is LIVE! ✅
 
-# Aadhar ML Verification - Team Setup Guide
+ML API: https://iiiii12345678-ml-backend.hf.space/extract
 
-## Architecture
+## Step 1-4: Configuration - COMPLETED ✅
+- [x] ML/app.py - CORS configured
+- [x] ML/README.md - Documentation ready
+- [x] vite.config.ts - Proxy updated
+- [x] .env.vercel - Environment variables template
 
-```
-┌─────────────────┐      ┌──────────────────┐      ┌─────────────────┐
-│   Frontend      │ ──→  │  Vite Proxy      │ ──→  │   ML Server     │
-│  (React :5173)  │      │  /extract → 5000 │      │  (Flask :5000)  │
-└─────────────────┘      └──────────────────┘      └─────────────────┘
-```
+## Step 5: Hugging Face Space - COMPLETED ✅
+- [x] ML backend is live at: https://iiiii12345678-ml-backend.hf.space
 
-**Teammates access ONLY the frontend URL. ML API calls are automatically forwarded!**
+## Step 6: Vercel Frontend Deployment - IN PROGRESS
+- [ ] 6.1 Push code to GitHub
+- [ ] 6.2 Create Vercel project
+- [ ] 6.3 Add environment variables
+- [ ] 6.4 Deploy
 
-## Team Setup (Do This)
-
-### Step 1: Clone & Install
-```bash
-git clone <repo-url>
-cd Census-System-1
-npm install
-```
-
-### Step 2: Configure Environment
-```bash
-cp .env.example .env
-# Add your Supabase credentials to .env
-```
-
-### Step 3: Run Everything
-```bash
-# Terminal 1: Start ML API (port 5000)
-cd ML
-python app.py
-
-# Terminal 2: Start Frontend (port 5173)
-npm run dev
-```
-
-### Step 4: Access
-Open **http://localhost:5173** in your browser.
-
-**That's it!** The ML API is automatically proxied:
-- Frontend calls `/extract`
-- Vite forwards to `http://localhost:5000/extract`
-
-## ML Server Deployment (Optional - For Production)
-
-Only deploy this if you want teammates to access ML API without running Python locally:
-
-```bash
-# Deploy ML folder to Railway/Render/Heroku
-cd ML
-# Deploy to cloud...
-
-# Update .env for production
-VITE_ML_API_URL=https://your-ml-api.herokuapp.com/extract
-```
-
-## Key Files Modified
-
-| File | Purpose |
-|------|---------|
-| `src/pages/Census.tsx` | ML API integration |
-| `ML/engine.py` | Name extraction (EasyOCR + Tesseract) |
-| `vite.config.ts` | API proxy configuration |
-| `.env.example` | Environment template |
-
-## Test Result
-```json
-{
-  "Aadhaar Number": "342506531151",
-  "Name": "Sid Malhorta"
-}
-```
-
+## Step 7: Testing
+- [ ] Test ML endpoint directly
+- [ ] Test complete Aadhar verification flow
 

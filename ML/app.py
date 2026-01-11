@@ -1,65 +1,52 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import os
-from engine import extract_details  # Ensure engine.py is in the same folder
+from engine import extract_details
 
 app = Flask(__name__)
 
-# 1. ENABLE CORS: This is vital so the other guy's repo can call your Mac
-CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS configuration for production
+# Allow all origins for development, specify in production
+CORS(app, resources={
+    r"/extract": {
+        "origins": [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            # Add your Vercel frontend URL here after deployment
+            # Example: "https://your-project.vercel.app"
+            "*"  # Allow all origins for testing - restrict in production
+        ]
+    }
+})
 
-# Configure where to save uploaded images temporarily
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
 def home():
-    """Serves the dashboard to you or anyone hitting the URL in a browser."""
-    return render_template('index.html')
+    return "ML Backend is Running. Send POST requests to /extract"
 
-@app.route('/extract', methods=['POST', 'OPTIONS'])
+@app.route('/extract', methods=['POST'])
 def upload_file():
-    # Handle the 'Preflight' request sent by browsers during cross-domain calls
-    if request.method == 'OPTIONS':
-        return jsonify({"status": "ok"}), 200
-
     if 'file' not in request.files:
-        return jsonify({"error": "No file uploaded", "is_valid_ocr": False}), 400
+        return jsonify({"error": "No file uploaded"}), 400
     
     file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No selected file", "is_valid_ocr": False}), 400
-
-    # Save the file temporarily
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(filepath)
 
     try:
-        # 2. TRIGGER YOUR ENGINE
         data = extract_details(filepath)
-        
-        # 3. ADD INTEGRATION HELPERS
-        # This allows the other guy to just check 'if (data.is_valid_ocr)'
-        has_name = data.get('Name') != "Not Found"
-        has_aadhar = data.get('Aadhaar Number') != "Not Found"
-        data['is_valid_ocr'] = has_name and has_aadhar
-        
-        # Log the result in your terminal so you can see what's happening
-        print(f"[*] Processed {file.filename} | Match Ready: {data['is_valid_ocr']}")
-        
+        # Check if basic details were found
+        data['is_valid_ocr'] = data.get('Name') != "Not Found" and data.get('Aadhaar Number') != "Not Found"
         return jsonify(data)
-
     except Exception as e:
-        print(f"[!] System Error: {str(e)}")
-        return jsonify({"error": "Server processing error", "is_valid_ocr": False}), 500
-    
+        return jsonify({"error": str(e)}), 500
     finally:
-        # 4. CLEANUP: Delete the image so your Mac doesn't fill up with sensitive data
         if os.path.exists(filepath):
             os.remove(filepath)
 
 if __name__ == '__main__':
-    # 0.0.0.0 makes the server public on your network
-    # port 5000 is what you are forwarding via Ngrok
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Hugging Face Spaces uses port 7860
+    app.run(host='0.0.0.0', port=7860)

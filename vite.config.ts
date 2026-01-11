@@ -9,13 +9,14 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 5173,  // Frontend on 5173
     historyApiFallback: true,
-    proxy: {
-      // ML API calls are automatically forwarded to port 5000
+    // For local development, proxy ML requests to local ML server
+    // In production, ML API is called directly from browser using VITE_ML_API_URL
+    proxy: mode === "development" ? {
       "/extract": {
-        target: "http://localhost:5000",
+        target: "http://localhost:7860",
         changeOrigin: true,
       },
-    },
+    } : undefined,
   },
 
   resolve: {
