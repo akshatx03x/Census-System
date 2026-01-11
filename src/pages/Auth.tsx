@@ -293,8 +293,12 @@ const Auth = () => {
                       {errors.password && <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{errors.password}</p>}
                     </div>
 
+                    
                     <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-11 shadow-lg shadow-emerald-600/20" disabled={isSubmitting}>
                       {isSubmitting ? "Verifying..." : "Authorize Login"}
+                    </Button>
+                    <Button type="button" className="w-full bg-blue-800 hover:bg-slate-600 text-gray-300 font-bold h-11 mb-3 shadow-lg" >
+                      Login with Mobile Number
                     </Button>
                   </form>
                 </TabsContent>
@@ -351,6 +355,9 @@ const Auth = () => {
                     {errors.password && <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{errors.password}</p>}
                     {errors.confirmPassword && <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wide">{errors.confirmPassword}</p>}
 
+                    <Button type="button" className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold h-11 mb-3 shadow-lg" disabled>
+                      Register with Mobile Number
+                    </Button>
                     <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-11 shadow-lg shadow-emerald-600/20" disabled={isSubmitting}>
                       {isSubmitting ? "Initializing Profile..." : "Complete Enrollment"}
                     </Button>
