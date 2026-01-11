@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FileText, ArrowLeft, Shield, CheckCircle } from "lucide-react";
+import { FileText, ArrowLeft, Shield, CheckCircle, Scale, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,13 +19,43 @@ const WrittenPolicies = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
             <FileText className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="font-heading text-4xl font-bold mb-4">Written Policies</h1>
+          <h1 className="font-heading text-4xl font-bold mb-4">Official Census Policies</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Review our comprehensive written policies governing data collection, privacy, and usage.
+            Review the regulatory framework and government mandates governing data collection for all citizens, including General Category provisions.
           </p>
         </div>
 
         <div className="space-y-6">
+          {/* NEW: General Category & EWS Policy */}
+          <Card className="border-l-4 border-l-blue-500">
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+                <Scale className="h-6 w-6 text-blue-600" />
+              </div>
+              <CardTitle>General Category & EWS Policy</CardTitle>
+            </CardHeader>
+            <CardContent className="text-muted-foreground">
+              <p className="mb-4">
+                In accordance with the 103rd Constitutional Amendment, data for the General Category (Unreserved) is processed to identify eligibility for Economically Weaker Section (EWS) benefits.
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>Income Verification:</strong> Collection of gross annual household income (below ₹8 lakh limit).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>Asset Mapping:</strong> Voluntary declaration of agricultural land (under 5 acres) or residential flats (under 1000 sq ft).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span><strong>Exclusion Principle:</strong> General category data ensures benefits reach those not covered under SC, ST, or OBC (Central List) schemes.</span>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Existing: Data Collection Policy */}
           <Card>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center mb-4">
@@ -35,7 +65,7 @@ const WrittenPolicies = () => {
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p className="mb-4">
-                We collect only essential information required for census purposes. Personal identifiers like Aadhaar and PAN numbers are used solely for verification and are not stored permanently.
+                We collect essential information required for census purposes. Personal identifiers like Aadhaar and PAN numbers are used solely for verification and are not stored permanently.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
@@ -46,70 +76,36 @@ const WrittenPolicies = () => {
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
                   <span>Socio-economic details for statistical analysis</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Temporary verification data (not retained)</span>
-                </li>
               </ul>
             </CardContent>
           </Card>
 
+          {/* NEW: Constitutional & Legal Framework */}
           <Card>
             <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-accent" />
+              <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-4">
+                <Landmark className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle>Data Retention Policy</CardTitle>
+              <CardTitle>Constitutional Compliance</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground">
               <p className="mb-4">
-                Census data is retained according to government regulations and statistical requirements. Personal data is anonymized after processing.
+                All data is processed under the <strong>Census Act, 1948</strong> and the <strong>Registration of Births and Deaths Act, 1969</strong>.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Raw personal data: Maximum 30 days post-submission</span>
+                  <span><strong>Confidentiality:</strong> Under Section 15 of the Census Act, individual data is not admissible as evidence in a court of law.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Anonymized statistical data: Retained indefinitely</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Blockchain hashes: Permanent immutable record</span>
+                  <span><strong>Equality:</strong> Data ensures equitable distribution of resources regardless of caste, creed, or category.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle>Data Usage Policy</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground">
-              <p className="mb-4">
-                Collected data is used exclusively for government census and statistical purposes. No commercial use or third-party sharing occurs.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Government planning and policy development</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Demographic and socio-economic analysis</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Public service allocation and resource planning</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
+          {/* Existing: Data Security Policy */}
           <Card>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center mb-4">
@@ -129,10 +125,6 @@ const WrittenPolicies = () => {
                 <li className="flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
                   <span>Blockchain verification for tamper-proof records</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Zero-knowledge proofs for privacy-preserving verification</span>
                 </li>
               </ul>
             </CardContent>
