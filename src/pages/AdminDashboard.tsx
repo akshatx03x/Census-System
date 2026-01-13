@@ -11,7 +11,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { getStateByCode } from "@/data/indianStates";
 
-// Fetch data from Supabase
 const fetchFromSupabase = async () => {
   const { data, error } = await supabase
     .from('census_submissions')

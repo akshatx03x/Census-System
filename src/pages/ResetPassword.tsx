@@ -21,7 +21,6 @@ const ResetPassword = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // User must be authenticated via the reset link to access this page
   useEffect(() => {
     if (!loading && !user) {
       toast({

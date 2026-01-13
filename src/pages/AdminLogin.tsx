@@ -70,7 +70,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 flex flex-col relative overflow-hidden">
-      {/* Background Decorative Elements */}
+
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px]" />
@@ -101,7 +101,7 @@ const AdminLogin = () => {
           </div>
 
           <Card className="bg-slate-900/50 backdrop-blur-xl border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-            {/* Security Pulse Line */}
+
             <div className="h-0.5 w-full bg-slate-800 relative overflow-hidden">
               <div className="absolute inset-0 bg-emerald-500/50 animate-progress origin-left" />
             </div>

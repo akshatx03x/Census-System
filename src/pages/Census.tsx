@@ -13,7 +13,6 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, ArrowLeft, ArrowRight, Check, LogOut, Upload, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { indianStates, getDistrictsByState } from "@/data/indianStates";
 
-// Define the sub-caste options mapping
 const subCasteOptions: Record<string, string[]> = {
   SC: ["Chamar", "Valmiki", "Pasi", "Dhobi", "Mahar", "Other SC"],
   ST: ["Gond", "Bhil", "Santhal", "Oraon", "Munda", "Other ST"],
@@ -70,12 +69,10 @@ const Census = () => {
     setFormData((prev) => {
       const newData = { ...prev, [field]: value };
 
-      // Reset District if State changes
       if (field === "state") {
         newData.district = "";
       }
 
-      // Reset Sub-Caste if Caste Category changes
       if (field === "casteCategory") {
         newData.subCaste = "";
       }
@@ -86,12 +83,8 @@ const Census = () => {
 
   const districts = formData.state ? getDistrictsByState(formData.state) : [];
 
-  // Get available sub-castes based on selected category
   const availableSubCastes = formData.casteCategory ? subCasteOptions[formData.casteCategory] || [] : [];
 
-  // ML API URL - Use environment variable for production deployment
-  // For local development: "http://localhost:7860/extract" (via proxy)
-  // For production: Set VITE_ML_API_URL in .env file (e.g., https://your-hf-space.hf.space/extract)
   const ML_API_URL = import.meta.env.VITE_ML_API_URL || "/extract";
 
   const verifyAadharWithML = async () => {
@@ -100,8 +93,6 @@ const Census = () => {
     setVerificationMessage("Checking user existence in backend...");
 
     try {
-      // First check if user exists in aadhar_records table
-      // Fetch all records and filter in JS to handle spaces in Aadhar numbers
       const { data: aadharRecords, error: checkError } = await supabase
         .from('aadhar_records')
         .select('name, aadhar_number');
@@ -119,7 +110,6 @@ const Census = () => {
         return;
       }
 
-      // Find matching record by normalizing Aadhar numbers (remove spaces)
       const normalizedInputAadhar = formData.aadharNumber.replace(/\s/g, '');
       const aadharRecord = aadharRecords?.find(record =>
         record.aadhar_number.replace(/\s/g, '') === normalizedInputAadhar
@@ -142,10 +132,8 @@ const Census = () => {
         return;
       }
 
-      // User exists, proceed with verification
       setVerificationMessage("User found. Verifying Aadhar...");
 
-      // Simulate ML verification delay
       setTimeout(() => {
         setVerificationStatus('matched');
         setVerificationMessage(`✓ Aadhar Verified: ${formData.aadharNumber}`);
@@ -159,7 +147,7 @@ const Census = () => {
           description: "Aadhar number verified successfully.",
         });
         setIsVerifying(false);
-      }, 1000); // 1 second delay to simulate processing
+      }, 1000);
 
     } catch (error) {
       setVerificationStatus('error');
@@ -174,7 +162,6 @@ const Census = () => {
     }
   };
 
-  // Auto-verify when Aadhar image is uploaded
   const handleAadharImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -235,7 +222,6 @@ const Census = () => {
     if (error) {
       toast({ title: "Submission Failed", description: error.message, variant: "destructive" });
     } else {
-      // Store form data for PDF receipt
       localStorage.setItem('census_form_data', JSON.stringify({
         ...submissionData,
         submissionId: 'CEN-2024-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
@@ -372,7 +358,6 @@ const Census = () => {
                   </p>
                 </div>
 
-                {/* Manual Entry Display */}
                 <div className="bg-secondary/50 rounded-lg p-4 space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Name (Manual Entry):</span>
@@ -384,14 +369,12 @@ const Census = () => {
                   </div>
                 </div>
 
-                {/* Extracted Details from ML with Match Status */}
                 {(extractedAadharNumber || extractedName) && (
                   <div className="bg-blue-50 rounded-lg p-4 space-y-3 text-sm border border-blue-200">
                     <h4 className="font-medium text-blue-800 flex items-center gap-2">
                       <Upload className="h-4 w-4" /> ML Extracted Details
                     </h4>
-                    
-                    {/* Name with match status */}
+
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Extracted Name:</span>
                       <div className="flex items-center gap-2">
@@ -401,7 +384,6 @@ const Census = () => {
                       </div>
                     </div>
                     
-                    {/* Aadhar with match status */}
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Extracted Aadhar:</span>
                       <div className="flex items-center gap-2">
@@ -413,7 +395,6 @@ const Census = () => {
                   </div>
                 )}
 
-                {/* Verification Status */}
                 {verificationStatus !== 'idle' && (
                   <div className={`rounded-lg p-4 space-y-3 text-sm border ${
                     verificationStatus === 'matched' ? 'bg-green-50 border-green-200' :
@@ -443,7 +424,6 @@ const Census = () => {
                   </div>
                 )}
 
-                {/* Verify Button */}
                 <Button
                   onClick={verifyAadharWithML}
                   className="w-full"
@@ -467,7 +447,6 @@ const Census = () => {
                   )}
                 </Button>
 
-                {/* Help text */}
                 {!aadharImageFile && (
                   <p className="text-xs text-muted-foreground text-center">
                     Please upload your Aadhar image in Step 1 to enable verification.

@@ -173,9 +173,7 @@ const Success = () => {
               </div>
             </div>
 
-            {/* Transaction Details */}
             <div className="p-8 space-y-6">
-              {/* Blockchain Hash */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                   <Database className="h-4 w-4 text-blue-600" />
@@ -203,7 +201,6 @@ const Success = () => {
                 </div>
               </div>
 
-              {/* Timestamp */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                   <Clock className="h-4 w-4 text-green-600" />
@@ -225,7 +222,6 @@ const Success = () => {
                 </div>
               </div>
 
-              {/* Status Timeline */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                   <Shield className="h-4 w-4 text-purple-600" />
@@ -253,7 +249,6 @@ const Success = () => {
             </div>
           </div>
 
-          {/* Security Info Card */}
           <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 mb-6 border-2 border-blue-100">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
@@ -283,7 +278,6 @@ const Success = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <button
               onClick={downloadReceipt}
@@ -302,7 +296,6 @@ const Success = () => {
             </button>
           </div>
 
-          {/* Footer Note */}
           <div className="text-center">
             <p className="text-sm text-slate-600">
               Keep your submission ID <strong className="text-slate-800">{submissionId}</strong> for future reference.

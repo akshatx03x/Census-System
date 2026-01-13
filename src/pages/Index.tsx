@@ -18,13 +18,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 selection:bg-emerald-500/30">
-      {/* Subtle Ambient Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-emerald-500/5 rounded-full blur-[120px]" />
         <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[120px]" />
       </div>
-
-      {/* Official Top Bar */}
       <div className="relative z-[60] bg-slate-950 border-b border-slate-800/50 py-1.5 px-4">
         <div className="container mx-auto flex justify-between items-center text-[10px] uppercase tracking-widest font-semibold text-slate-400">
           <div className="flex gap-6">
@@ -40,7 +37,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main Navigation */}
       <header className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? 'py-3 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50' : 'py-6 bg-transparent'}`}>
         <nav className="container mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -80,7 +76,6 @@ const Index = () => {
       </header>
 
       <main>
-        {/* Hero: Minimalist & Authoritative */}
         <section className="pt-20 pb-32 px-6">
           <div className="container mx-auto">
             <div className="max-w-4xl">
@@ -114,12 +109,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Bento Grid: Trust & Tech */}
         <section className="py-24 bg-slate-950/50 relative">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
               
-              {/* Feature 1: AI */}
               <div className="md:col-span-8 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem] hover:border-emerald-500/30 transition-colors group">
                 <div className="flex justify-between items-start mb-12">
                   <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20">
@@ -132,8 +125,6 @@ const Index = () => {
                   Leveraging advanced machine learning to predict demographic shifts and optimize resource distribution across 700+ districts.
                 </p>
               </div>
-
-              {/* Feature 2: Security */}
               <div className="md:col-span-4 bg-gradient-to-b from-emerald-600 to-teal-700 p-10 rounded-[2rem] text-white">
                 <Lock className="w-12 h-12 mb-8 opacity-50" />
                 <h3 className="text-3xl font-bold mb-4 leading-tight">Zero-Knowledge Architecture</h3>
@@ -145,14 +136,12 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Feature 3: Real-time map placeholder */}
               <div className="md:col-span-4 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem]">
                 <Map className="text-blue-400 w-10 h-10 mb-6" />
                 <h3 className="text-xl font-bold text-white mb-2">Geospatial Integrity</h3>
                 <p className="text-slate-400 text-sm">Automated GIS tagging ensures data accuracy across rural and urban landscapes.</p>
               </div>
 
-              {/* Feature 4: Blockchain */}
               <div className="md:col-span-8 bg-slate-900/40 border border-slate-800 p-10 rounded-[2rem] flex flex-col md:flex-row items-center gap-8">
                 <div className="flex-1">
                   <Database className="text-amber-500 w-10 h-10 mb-6" />
@@ -168,8 +157,6 @@ const Index = () => {
             </div>
           </div>
         </section>
-
-        {/* Data Protection Stat */}
         <section className="py-24">
           <div className="container mx-auto px-6 text-center">
             <div className="max-w-3xl mx-auto">
@@ -195,7 +182,6 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Footer: Detailed & Institutional */}
       <footer className="bg-slate-950 border-t border-slate-800 pt-20 pb-10">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">

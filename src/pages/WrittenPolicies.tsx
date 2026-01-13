@@ -26,7 +26,6 @@ const WrittenPolicies = () => {
         </div>
 
         <div className="space-y-6">
-          {/* NEW: General Category & EWS Policy */}
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
@@ -55,7 +54,6 @@ const WrittenPolicies = () => {
             </CardContent>
           </Card>
 
-          {/* Existing: Data Collection Policy */}
           <Card>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center mb-4">
@@ -80,7 +78,6 @@ const WrittenPolicies = () => {
             </CardContent>
           </Card>
 
-          {/* NEW: Constitutional & Legal Framework */}
           <Card>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-4">
