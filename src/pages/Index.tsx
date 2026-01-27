@@ -31,7 +31,12 @@ const Index = () => {
       <div className="relative z-[60] bg-slate-950 border-b border-slate-800/50 py-1.5 px-4">
         <div className="container mx-auto flex justify-between items-center text-[10px] uppercase tracking-widest font-semibold text-slate-400">
           <div className="flex gap-6">
-            <span className="hover:text-emerald-400 cursor-pointer transition-colors">{t('Ministry of Home Affairs')}</span>
+            <span
+              className="hover:text-emerald-400 cursor-pointer transition-colors"
+              onClick={() => window.open('https://www.mha.gov.in/en', '_blank')}
+            >
+              {t('Ministry of Home Affairs')}
+            </span>
             <span className="hover:text-emerald-400 cursor-pointer transition-colors">{t('Digital India')}</span>
           </div>
           <div className="flex gap-4 items-center">
