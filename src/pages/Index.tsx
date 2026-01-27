@@ -37,7 +37,12 @@ const Index = () => {
             >
               {t('Ministry of Home Affairs')}
             </span>
-            <span className="hover:text-emerald-400 cursor-pointer transition-colors">{t('Digital India')}</span>
+            <span
+              className="hover:text-emerald-400 cursor-pointer transition-colors"
+              onClick={() => window.open('https://www.digitalindia.gov.in/', '_blank')}
+            >
+              {t('Digital India')}
+            </span>
           </div>
           <div className="flex gap-4 items-center">
             <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {t('Accessibility')}</span>
