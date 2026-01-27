@@ -1,0 +1,121 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      "Ministry of Home Affairs": "Ministry of Home Affairs",
+      "Digital India": "Digital India",
+      "Accessibility": "Accessibility",
+      "English": "English",
+      "हिन्दी": "हिन्दी",
+      "CENSUS INDIA": "CENSUS INDIA",
+      "National Portal": "National Portal",
+      "Statistics": "Statistics",
+      "Methodology": "Methodology",
+      "Privacy": "Privacy",
+      "Resources": "Resources",
+      "Citizen Login": "Citizen Login",
+      "Admin Login": "Admin Login",
+      "2026 CENSUS PHASE II NOW ACTIVE": "2026 CENSUS PHASE II NOW ACTIVE",
+      "The Foundation of Governance.": "The Foundation of Governance.",
+      "A secure, cryptographic infrastructure for national data collection. Ensuring every citizen is counted, every voice is heard, and your privacy is mathematically guaranteed.": "A secure, cryptographic infrastructure for national data collection. Ensuring every citizen is counted, every voice is heard, and your privacy is mathematically guaranteed.",
+      "Begin Digital Submission": "Begin Digital Submission",
+      "View Public Metrics": "View Public Metrics",
+      "AI-Driven Insights": "AI-Driven Insights",
+      "Leveraging advanced machine learning to predict demographic shifts and optimize resource distribution across 700+ districts.": "Leveraging advanced machine learning to predict demographic shifts and optimize resource distribution across 700+ districts.",
+      "Zero-Knowledge Architecture": "Zero-Knowledge Architecture",
+      "Your identity is verified via encrypted hashes. We never store raw biometrics or sensitive documents.": "Your identity is verified via encrypted hashes. We never store raw biometrics or sensitive documents.",
+      "Geospatial Integrity": "Geospatial Integrity",
+      "Automated GIS tagging ensures data accuracy across rural and urban landscapes.": "Automated GIS tagging ensures data accuracy across rural and urban landscapes.",
+      "Immutable Ledger": "Immutable Ledger",
+      "Publicly auditable hashing ensures that once your data is submitted, it cannot be tampered with by any authority.": "Publicly auditable hashing ensures that once your data is submitted, it cannot be tampered with by any authority.",
+      "Uptime Reliability": "Uptime Reliability",
+      "Sovereignty Over Your Information": "Sovereignty Over Your Information",
+      "We implement the strictest \"Privacy by Design\" principles. Every piece of data is tokenized, meaning individual records are decoupled from identity markers during processing.": "We implement the strictest \"Privacy by Design\" principles. Every piece of data is tokenized, meaning individual records are decoupled from identity markers during processing.",
+      "Certified": "Certified",
+      "Compliant": "Compliant",
+      "Census India 2026": "Census India 2026",
+      "The Office of the Registrar General & Census Commissioner, India. Under the Ministry of Home Affairs, Government of India.": "The Office of the Registrar General & Census Commissioner, India. Under the Ministry of Home Affairs, Government of India.",
+      "Services": "Services",
+      "Mobile Application": "Mobile Application",
+      "Legal": "Legal",
+      "Data Standards": "Data Standards",
+      "Cyber Security": "Cyber Security",
+      "Support": "Support",
+      "Help Desk": "Help Desk",
+      "Nodal Officers": "Nodal Officers",
+      "FAQs": "FAQs",
+      "© 2026 Registrar General of India. All Rights Reserved.": "© 2026 Registrar General of India. All Rights Reserved.",
+      "National Informatics Centre": "National Informatics Centre",
+      "Digital India Initiative": "Digital India Initiative"
+    }
+  },
+  hi: {
+    translation: {
+      "Ministry of Home Affairs": "गृह मंत्रालय",
+      "Digital India": "डिजिटल इंडिया",
+      "Accessibility": "पहुंच",
+      "English": "English",
+      "हिन्दी": "हिन्दी",
+      "CENSUS INDIA": "जनगणना भारत",
+      "National Portal": "राष्ट्रीय पोर्टल",
+      "Statistics": "सांख्यिकी",
+      "Methodology": "पद्धति",
+      "Privacy": "गोपनीयता",
+      "Resources": "संसाधन",
+      "Citizen Login": "नागरिक लॉगिन",
+      "Admin Login": "व्यवस्थापक लॉगिन",
+      "2026 CENSUS PHASE II NOW ACTIVE": "2026 जनगणना चरण II अब सक्रिय",
+      "The Foundation of Governance.": "शासन की नींव।",
+      "A secure, cryptographic infrastructure for national data collection. Ensuring every citizen is counted, every voice is heard, and your privacy is mathematically guaranteed.": "राष्ट्रीय डेटा संग्रह के लिए एक सुरक्षित, क्रिप्टोग्राफिक बुनियादी ढांचा। यह सुनिश्चित करता है कि हर नागरिक की गिनती हो, हर आवाज सुनी जाए, और आपकी गोपनीयता गणितीय रूप से गारंटीशुदा हो।",
+      "Begin Digital Submission": "डिजिटल सबमिशन शुरू करें",
+      "View Public Metrics": "सार्वजनिक मेट्रिक्स देखें",
+      "AI-Driven Insights": "एआई-संचालित अंतर्दृष्टि",
+      "Leveraging advanced machine learning to predict demographic shifts and optimize resource distribution across 700+ districts.": "700+ जिलों में जनसांख्यिकीय बदलावों की भविष्यवाणी करने और संसाधन वितरण को अनुकूलित करने के लिए उन्नत मशीन लर्निंग का लाभ उठाना।",
+      "Zero-Knowledge Architecture": "शून्य-ज्ञान आर्किटेक्चर",
+      "Your identity is verified via encrypted hashes. We never store raw biometrics or sensitive documents.": "आपकी पहचान एन्क्रिप्टेड हैश के माध्यम से सत्यापित की जाती है। हम कभी भी कच्चे बायोमेट्रिक्स या संवेदनशील दस्तावेजों को स्टोर नहीं करते।",
+      "Geospatial Integrity": "भौगोलिक अखंडता",
+      "Automated GIS tagging ensures data accuracy across rural and urban landscapes.": "स्वचालित जीआईएस टैगिंग ग्रामीण और शहरी परिदृश्यों में डेटा सटीकता सुनिश्चित करती है।",
+      "Immutable Ledger": "अपरिवर्तनीय लेजर",
+      "Publicly auditable hashing ensures that once your data is submitted, it cannot be tampered with by any authority.": "सार्वजनिक रूप से ऑडिटेबल हैशिंग सुनिश्चित करता है कि एक बार आपका डेटा सबमिट हो जाने के बाद, कोई भी अधिकारी उसमें हस्तक्षेप नहीं कर सकता।",
+      "Uptime Reliability": "अपटाइम विश्वसनीयता",
+      "Sovereignty Over Your Information": "आपकी जानकारी पर संप्रभुता",
+      "We implement the strictest \"Privacy by Design\" principles. Every piece of data is tokenized, meaning individual records are decoupled from identity markers during processing.": "हम \"प्राइवेसी बाय डिजाइन\" के सबसे सख्त सिद्धांतों को लागू करते हैं। हर डेटा टुकड़ा टोकनाइज्ड होता है, जिसका अर्थ है कि प्रसंस्करण के दौरान व्यक्तिगत रिकॉर्ड पहचान मार्करों से अलग हो जाते हैं।",
+      "Certified": "प्रमाणित",
+      "Compliant": "अनुपालित",
+      "Census India 2026": "जनगणना भारत 2026",
+      "The Office of the Registrar General & Census Commissioner, India. Under the Ministry of Home Affairs, Government of India.": "भारत के रजिस्ट्रार जनरल और जनगणना आयुक्त का कार्यालय। भारत सरकार के गृह मंत्रालय के अधीन।",
+      "Services": "सेवाएं",
+      "Mobile Application": "मोबाइल एप्लिकेशन",
+      "Legal": "कानूनी",
+      "Data Standards": "डेटा मानक",
+      "Cyber Security": "साइबर सुरक्षा",
+      "Support": "सहायता",
+      "Help Desk": "हेल्प डेस्क",
+      "Nodal Officers": "नोडल अधिकारी",
+      "FAQs": "सामान्य प्रश्न",
+      "© 2026 Registrar General of India. All Rights Reserved.": "© 2026 भारत के रजिस्ट्रार जनरल। सभी अधिकार सुरक्षित।",
+      "National Informatics Centre": "राष्ट्रीय सूचना विज्ञान केंद्र",
+      "Digital India Initiative": "डिजिटल इंडिया पहल",
+      "PRECISION ANALYTICS": "सटीक विश्लेषण",
+      "Admin Access": "व्यवस्थापक पहुंच",
+      "Privacy Policy": "गोपनीयता नीति",
+      "AES-256-GCM Protocol": "AES-256-GCM प्रोटोकॉल"
+    }
+  }
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: 'en',
+    fallbackLng: 'en',
+    debug: false, // Disable debug mode for production
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
+export default i18n;
