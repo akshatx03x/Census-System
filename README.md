@@ -20,6 +20,14 @@ A **secure, privacy-first caste census prototype** built to demonstrate how **te
 - 📊 **Admin Dashboard with AI Analytics**  
   Visualizes caste distribution, state-wise trends, and socio-economic insights using interactive charts.
 
+• Built a secure digital census platform for structured demographic data collection and management.
+
+• Integrated ML-based Aadhaar verification to validate identities and reduce duplicate records.
+
+• Implemented SHA-256 blockchain hashing and analytics dashboards to ensure data integrity and support policy
+  planning
+
+
 - 📁 **Features**
 ✅ Add Supabase backend with persistent storage
 ✅ Secure real authentication (OTP & ID validation)
